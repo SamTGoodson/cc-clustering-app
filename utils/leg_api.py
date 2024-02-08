@@ -155,3 +155,11 @@ def make_base_map(df,CM_DATA,gdf):
     master_map = pd.merge(gdfe, master, left_on='CounDist', right_on='District', how='left')
 
     return master_map
+
+def generate_colorscale(num_clusters, geojson_data):
+    cmap = plt.get_cmap('tab20')
+    colorscale = [
+        "rgba({},{},{},{})".format(int(r * 255), int(g * 255), int(b * 255), a)
+        for r, g, b, a in (cmap(i / num_clusters) for i in range(num_clusters))
+    ]
+    return colorscale

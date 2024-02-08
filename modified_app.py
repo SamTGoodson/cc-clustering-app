@@ -1,6 +1,4 @@
-
 from dash import Dash, html, dcc, callback, Output, Input,State
-import dash_bootstrap_components as dbc
 import pandas as pd
 import geopandas as gpd
 import dash_leaflet as dl
@@ -16,7 +14,7 @@ gdf = gpd.read_file('shapefiles/nycc_22a')
 Z = start_hierarchical(votes_df)
 
 
-app = Dash(__name__,external_stylesheets=[dbc.themes.CYBORG])
+app = Dash(__name__)
 
 initial_threshold = 40  
 clusters = cluster(Z, votes_df, initial_threshold)
@@ -46,16 +44,16 @@ hover_info = html.Div(
 
 def create_dendrogram(Z):
     fig = ff.create_dendrogram(Z, orientation='bottom')
-    fig.update_layout(width=1200, height=600) 
+    fig.update_layout(width=1000, height=600) 
     return fig
 dendrogram_fig = create_dendrogram(Z)
 
 app.layout = html.Div([
         html.Div([
-        html.P("This application takes voting data from the New York City Councils “Legistar” API and clusters council members by the way that they vote. Beacuse most votes are fairly lopsided, this application only looks at the most competitive votes. "), 
-        html.P("The method of clustering used here is known as “Hierarchical Clustering.” The graph you see below is called a “dendrogram” and is used in the process of hierarchical clustering. You can think of the top of the y-axis as one cluster, everyone on the City Council, and the bottom as around 25 separate clusters in which each council member is paired with their nearest neighbor(s). The location on the y-axis determines the numbers of clusters. For example, at the very top of the dendrogram we see two lines, which means two clusters. The line on the left is attached of a very small group of individuals at the bottom, these are the council's most conservative members. As you go further down, those clusters further subdivide as we get more specific."),  
-        html.P("The numbers on the y-axis correspond to the numbers on the slider above the map. Move the slider to change the number of clusters and see how the map changes. You can also hover over the map to see the district number, council member, and cluster number."), 
-    ], style={'font-family': 'Georgia','padding': '10px','textAlign': 'center'}),
+        html.P("The application takes voting data from the New York City Councils “Legistar” API and clusters council members by the way that they vote."), 
+        html.P("The method of clustering user here is known as “Hierarchical Clustering.” The graph you see below is known as a “dendrogram” and is used in the process of hierarchical clustering. You can think of the top of the y-axis as one cluster, everyone on the City Council, and the bottom as 51 separate clusters in which each council member gets their own cluster. Where you are on the y-axis determines the numbers of clusters. For example, at the very top of the dendrogram we see two lines, which means two clusters. The line on the left is attached of a very small group of individuals at the bottom, these are the councils Republicans. As you go further down, those clusters further subdivide as we get more specific."),  
+        html.P("The numbers on the y-axis correspond to the numbers on the slider above the map. Move the slider to change the number of clusters and see how the map changes."), 
+    ], style={'padding': '20px','textAlign': 'center'}),
     html.Div([
         dcc.Graph(
             id='dendrogram-plot',
@@ -78,7 +76,7 @@ app.layout = html.Div([
                          style=style_handle,  
                          hideout=dict(colorscale=colorscale, num_clusters=num_clusters, style=style),
                          id="geojson")
-        ], style={'width': '80%', 'height': '50vh'}),
+        ], style={'width': '100%', 'height': '50vh'}),
 
         hover_info  
     ], style={'position': 'relative'}),  
@@ -118,25 +116,21 @@ def update_hover_info(hover_data):
 
 
 @app.callback(
-    Output('geojson', 'hideout'), 
-    [Input("cluster-threshold-slider", "value")]
+    Output('map-id', 'hideout'),  # This needs to be replaced with the actual Output targeting the map's hideout property
+    [Input('input-component-id', 'value')]  # Adjust this Input according to what triggers the update
 )
-def update_hideout(value):
-
-    clusters = cluster(Z, votes_df,value)
-    num_clusters = clusters['h_cluster'].nunique()
-    clusters_coords = make_base_map(clusters, cc_df, gdf)
-    new_geojson_data = json.loads(clusters_coords.to_json())
-    colorscale = generate_colorscale(num_clusters, new_geojson_data)
+def update_hideout(input_value):
+    # Assuming functions to calculate new colorscale and num_clusters are available
+    new_colorscale = generate_colorscale(num_clusters)  # Adjust with actual calculation
+    new_num_clusters = clusters['h_cluster'].nunique()  # Adjust with actual calculation
     
     new_hideout = {
-        'colorscale': colorscale,
-        'num_clusters': num_clusters,
+        'colorscale': new_colorscale,
+        'num_clusters': new_num_clusters,
         'style' : style
     }
-
-
     return new_hideout
+
 
 if __name__ == '__main__':
     app.run(debug=True)

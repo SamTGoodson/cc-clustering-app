@@ -13,7 +13,6 @@ from scipy.cluster.hierarchy import fcluster
 
 from config import cc_api_key
 
-import folium
 
 TODAY = datetime.today()
 SESS_BEGIN = TODAY.replace(year=TODAY.year - ((TODAY.year % 4) - 2), month=1, day=1).strftime("%Y-%m-%d") if (TODAY.year % 4) >= 2 else TODAY.replace(year=TODAY.year - ((TODAY.year % 4) + 2), month=1, day=1).strftime("%Y-%m-%d")

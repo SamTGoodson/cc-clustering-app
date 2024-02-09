@@ -2,6 +2,7 @@
 from dash import Dash, html, dcc, callback, Output, Input,State
 import dash_bootstrap_components as dbc
 import pandas as pd
+import numpy as np
 import geopandas as gpd
 import dash_leaflet as dl
 import plotly.figure_factory as ff
@@ -45,13 +46,18 @@ hover_info = html.Div(
 )
 
 def create_dendrogram(Z):
+    labels = votes_df.index
     fig = ff.create_dendrogram(Z, orientation='bottom')
-    fig.update_layout(width=1200, height=600) 
+    fig.update_layout(width=1200, height=600,
+    title_text='NYC Council Voting Clusters Dendrogram', 
+    title_x=0.5,  
+    title_font=dict(size=24, family='Georgia, serif')) 
     return fig
 dendrogram_fig = create_dendrogram(Z)
 
 app.layout = html.Div([
         html.Div([
+        html.H1("NYC Council Voting Clusters", style={'font-family': 'Georgia','padding': '10px','textAlign': 'center'}),    
         html.P("This application takes voting data from the New York City Councils “Legistar” API and clusters council members by the way that they vote. Beacuse most votes are fairly lopsided, this application only looks at the most competitive votes. "), 
         html.P("The method of clustering used here is known as “Hierarchical Clustering.” The graph you see below is called a “dendrogram” and is used in the process of hierarchical clustering. You can think of the top of the y-axis as one cluster, everyone on the City Council, and the bottom as around 25 separate clusters in which each council member is paired with their nearest neighbor(s). The location on the y-axis determines the numbers of clusters. For example, at the very top of the dendrogram we see two lines, which means two clusters. The line on the left is attached of a very small group of individuals at the bottom, these are the council's most conservative members. As you go further down, those clusters further subdivide as we get more specific."),  
         html.P("The numbers on the y-axis correspond to the numbers on the slider above the map. Move the slider to change the number of clusters and see how the map changes. You can also hover over the map to see the district number, council member, and cluster number."), 
@@ -61,7 +67,7 @@ app.layout = html.Div([
             id='dendrogram-plot',
             figure=dendrogram_fig
         )
-    ]),
+    ], style={'display': 'flex', 'justifyContent': 'center', 'width': '100%', 'margin': '0 auto'}),
     dcc.Slider(
         id='cluster-threshold-slider',
         min=0,
@@ -78,7 +84,7 @@ app.layout = html.Div([
                          style=style_handle,  
                          hideout=dict(colorscale=colorscale, num_clusters=num_clusters, style=style),
                          id="geojson")
-        ], style={'width': '80%', 'height': '50vh'}),
+        ], style={'width': '100%', 'height': '75vh', 'padding-bottom': '20px', 'margin-bottom': '50px'}),
 
         hover_info  
     ], style={'position': 'relative'}),  

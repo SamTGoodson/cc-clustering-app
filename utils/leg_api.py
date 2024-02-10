@@ -4,6 +4,7 @@ import requests
 from datetime import datetime
 import re
 from matplotlib import pyplot as plt
+import os 
 
 from sklearn.preprocessing import StandardScaler
 from sklearn.cluster import KMeans
@@ -11,7 +12,7 @@ from sklearn.cluster import KMeans
 from scipy.cluster.hierarchy import dendrogram, linkage
 from scipy.cluster.hierarchy import fcluster
 
-from config import cc_api_key
+cc_api_key = os.environ.get('cc_api_key')
 
 
 TODAY = datetime.today()

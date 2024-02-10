@@ -10,7 +10,7 @@ from utils.leg_api import generate_cc_df,cluster,make_base_map,find_close_votes,
 from utils.style import generate_colorscale,style_handle
 import json
 
-# Incorporate data
+
 cc_df = generate_cc_df()
 votes_df = find_close_votes()
 gdf = gpd.read_file('shapefiles/nycc_22a')
@@ -46,7 +46,6 @@ hover_info = html.Div(
 )
 
 def create_dendrogram(Z):
-    labels = votes_df.index
     fig = ff.create_dendrogram(Z, orientation='bottom')
     fig.update_layout(width=1200, height=600,
     title_text='NYC Council Voting Clusters Dendrogram', 
@@ -58,9 +57,8 @@ dendrogram_fig = create_dendrogram(Z)
 app.layout = html.Div([
         html.Div([
         html.H1("NYC Council Voting Clusters", style={'font-family': 'Georgia','padding': '10px','textAlign': 'center'}),    
-        html.P("This application takes voting data from the New York City Councils “Legistar” API and clusters council members by the way that they vote. Beacuse most votes are fairly lopsided, this application only looks at the most competitive votes. "), 
-        html.P("The method of clustering used here is known as “Hierarchical Clustering.” The graph you see below is called a “dendrogram” and is used in the process of hierarchical clustering. You can think of the top of the y-axis as one cluster, everyone on the City Council, and the bottom as around 25 separate clusters in which each council member is paired with their nearest neighbor(s). The location on the y-axis determines the numbers of clusters. For example, at the very top of the dendrogram we see two lines, which means two clusters. The line on the left is attached of a very small group of individuals at the bottom, these are the council's most conservative members. As you go further down, those clusters further subdivide as we get more specific."),  
-        html.P("The numbers on the y-axis correspond to the numbers on the slider above the map. Move the slider to change the number of clusters and see how the map changes. You can also hover over the map to see the district number, council member, and cluster number."), 
+        html.P("This application takes voting data from the New York City Councils “Legistar” API and clusters council members by the way that they vote. Because most council votes are fairly lopsided, this application only looks at the most competitive votes."), 
+        html.P("The method of clustering used here is known as “hierarchical clustering.” The graph below is called a “dendrogram” and is used in the process of hierarchical clustering to visualize the clusters and the distance between them. You can think of the top of the y-axis as one cluster including everyone on the City Council, and the bottom as around 25 separate clusters in which each council member is paired with their nearest neighbor(s). The location on the y-axis determines the numbers of clusters. For example, at the very top of the dendrogram, around 140 on the y-axis, we see two lines, which means at this distance there are two clusters. The line on the left leads down to a very small group of individuals at the bottom, these are the council's most conservative members. As you go further down both lines the clusters further subdivide into more specific categories."), 
     ], style={'font-family': 'Georgia','padding': '10px','textAlign': 'center'}),
     html.Div([
         dcc.Graph(
@@ -68,6 +66,10 @@ app.layout = html.Div([
             figure=dendrogram_fig
         )
     ], style={'display': 'flex', 'justifyContent': 'center', 'width': '100%', 'margin': '0 auto'}),
+        html.Div([
+        html.H2("Cluster Map", style={'font-family': 'Georgia','padding': '10px','textAlign': 'center'}),
+        html.P("The numbers on the slider correspond to the numbers on the y-axis above. As you move the slider the map will change to display the new number of clusters. Hover over the map to see the district number, the council member's name, and the cluster number."), 
+    ]),
     dcc.Slider(
         id='cluster-threshold-slider',
         min=0,

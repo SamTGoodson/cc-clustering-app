@@ -66,7 +66,7 @@ app.layout = html.Div([
             id='dendrogram-plot',
             figure=dendrogram_fig
         )
-    ], style={'display': 'flex', 'justifyContent': 'center', 'width': '100%', 'margin': '0 auto'}),
+    ], style={'display': 'flex', 'flexWrap': 'wrap','justifyContent': 'center', 'width': '100%', 'margin': '0 auto'}),
         html.Div([
         html.H2("Cluster Map", style={'font-family': 'Georgia','padding': '10px','textAlign': 'center'}),
         html.P("The numbers on the slider correspond to the numbers on the y-axis above. As you move the slider the map will change to display the new number of clusters. Hover over the map to see the district number, the council member's name, and the cluster number."), 

@@ -48,11 +48,41 @@ hover_info = html.Div(
 
 def create_dendrogram(Z):
     fig = ff.create_dendrogram(Z, orientation='bottom')
-    fig.update_layout(width=1200, height=600,
-    title_text='NYC Council Voting Clusters Dendrogram', 
-    title_x=0.5,  
-    title_font=dict(size=24, family='Georgia, serif')) 
+    fig.update_layout(
+        # Remove the fixed width to allow responsiveness
+        # width=1200 is removed
+        height=600,
+        title_text='NYC Council Voting Clusters Dendrogram', 
+        title_x=0.5,  
+        title_font=dict(size=24, family='Georgia, serif'),
+        
+        # Enable responsive graph size
+        autosize=True,
+        margin=dict(l=40, r=40, t=40, b=40)
+    ) 
+
+
+    fig.update_layout(
+        template={
+            'data': {
+                'bar': [{'error_x': {'color': '#2a3f5f'}, 'error_y': {'color': '#2a3f5f'}, 'marker': {'line': {'color': '#E5ECF6', 'width': 0.5}}, 'type': 'bar'}],
+                'pie': [{'automargin': True, 'type': 'pie'}],
+                'table': [{'header': {'fill': {'color': '#C8D4E3'}, 'line': {'color': 'white'}, 'align': 'center', 'font': {'family': "Arial", 'size': 12, 'color': 'black'}}, 'cells': {'fill': {'color': '#EBF0F8'}, 'line': {'color': 'white'}, 'align': 'center', 'font': {'family': "Arial", 'size': 11, 'color': '#506784'}}}],
+            },
+            'layout': {
+                'autosize': True,
+                'font': {'color': '#2a3f5f'},
+                'hovermode': 'closest',
+                'margin': {'b': 40, 'l': 40, 'r': 40, 't': 40},
+                'plot_bgcolor': 'white',
+                'xaxis': {'automargin': True, 'gridcolor': 'white', 'linecolor': 'white', 'ticks': '', 'title': {'standoff': 15}, 'zerolinecolor': 'white', 'zerolinewidth': 2},
+                'yaxis': {'automargin': True, 'gridcolor': 'white', 'linecolor': 'white', 'ticks': '', 'title': {'standoff': 15}, 'zerolinecolor': 'white', 'zerolinewidth': 2}
+            }
+        }
+    )
+    
     return fig
+
 dendrogram_fig = create_dendrogram(Z)
 
 app.layout = html.Div([

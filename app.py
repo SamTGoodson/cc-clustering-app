@@ -18,6 +18,7 @@ Z = start_hierarchical(votes_df)
 
 
 app = Dash(__name__,external_stylesheets=[dbc.themes.CYBORG])
+server = app.server
 
 initial_threshold = 40  
 clusters = cluster(Z, votes_df, initial_threshold)
@@ -147,4 +148,4 @@ def update_hideout(value):
     return new_hideout
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run_server(debug=True)

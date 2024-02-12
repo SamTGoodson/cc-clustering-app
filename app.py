@@ -49,14 +49,10 @@ hover_info = html.Div(
 def create_dendrogram(Z):
     fig = ff.create_dendrogram(Z, orientation='bottom')
     fig.update_layout(
-        # Remove the fixed width to allow responsiveness
-        # width=1200 is removed
         height=600,
         title_text='NYC Council Voting Clusters Dendrogram', 
         title_x=0.5,  
         title_font=dict(size=24, family='Georgia, serif'),
-        
-        # Enable responsive graph size
         autosize=True,
         margin=dict(l=40, r=40, t=40, b=40)
     ) 
